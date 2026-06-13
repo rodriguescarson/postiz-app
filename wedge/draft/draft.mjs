@@ -60,7 +60,7 @@ async function chat(messages) {
     headers: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      "X-Title": "Skillfile/Postiz wedge — build-in-public",
+      "X-Title": "Postiz wedge - build-in-public",
     },
     body: JSON.stringify({ model: MODEL, max_tokens: 2000, messages }),
   });
@@ -131,6 +131,12 @@ async function main() {
     process.exit(1);
   }
 
+  const outFile = arg("--out", null);
+  if (outFile) {
+    const { writeFileSync } = await import("node:fs");
+    writeFileSync(outFile, JSON.stringify(posts, null, 2));
+    console.error(`wrote ${posts.length} draft(s) → ${outFile}`);
+  }
   if (asJson) {
     console.log(JSON.stringify(posts, null, 2));
     return;

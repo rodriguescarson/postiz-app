@@ -21,6 +21,23 @@ Example:
 node wedge/draft/draft.mjs ~/projects/rfs/skillfile --since 7d --json
 ```
 
+## Schedule into Postiz (loop-closer)
+
+```bash
+# 1. generate + persist
+node wedge/draft/draft.mjs <repo> --since 7d --out drafts.json
+# 2. dry-run (prints the exact Postiz API requests — safe, no instance needed)
+node wedge/draft/schedule.mjs drafts.json --when "2026-06-22T09:00:00Z"
+# 3. for real (needs a running Postiz + connected channels)
+POSTIZ_URL=… POSTIZ_API_KEY=… POSTIZ_CHANNEL_X=… POSTIZ_CHANNEL_LINKEDIN=… \
+  node wedge/draft/schedule.mjs drafts.json --when "…" --post
+```
+
+`schedule.mjs` posts to Postiz's public API (`POST /public/v1/posts`) — the one
+seam that depends on a running Postiz instance + connected X/LinkedIn channels
+(see [`../notes/social-oauth-setup.md`](../notes/social-oauth-setup.md)). Confirm
+the payload matches your Postiz version.
+
 ## How it works
 
 1. **Ground:** reads real git commits + changed-file scope since `--since`
